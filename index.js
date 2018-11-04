@@ -1,9 +1,10 @@
 const express = require("express");
 const cheerio = require("cheerio");
 const fetch = require("node-fetch");
+const cors = require("cors");
 
 const app = express();
-
+app.use(cors());
 app.get("/", (req, res) => {
   res.send("API WORK !");
 });
@@ -157,6 +158,6 @@ app.get("/comic/:title/:chapter", async (req, res) => {
   res.send(pages);
 });
 
-app.listen("3000", () => {
+app.listen("4000", () => {
   console.log("Server is running ...");
 });
