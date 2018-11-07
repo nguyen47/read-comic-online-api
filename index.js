@@ -158,6 +158,35 @@ app.get("/comic/:title/:chapter", async (req, res) => {
   res.send(pages);
 });
 
+app.get("/hot", async (req, res) => {
+  const url = `https://readcomicsonline.ru/`;
+  const response = await fetch(url);
+
+  if (response.status == 500) {
+    return res.status(404).send("Chapter Not Found");
+  }
+
+  const body = await response.text();
+  const $ = cheerio.load(body);
+  const comics = [];
+  $("#schedule li").each((i, element) => {
+    const item = $(element);
+    const title = item
+      .find(".schedule-name")
+      .text()
+      .trim();
+    const urlRaw = item.find(".schedule-name a").attr("href");
+    const comic = {
+      title,
+      urlRaw,
+      url: `${apiEndpoint}/comic/${urlRaw.substr(urlRaw.lastIndexOf("/") + 1)}`
+    };
+    comics.push(comic);
+  });
+
+  res.send(comics);
+});
+
 app.listen("4000", () => {
   console.log("Server is running ...");
 });
